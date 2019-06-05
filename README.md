@@ -18,5 +18,5 @@ The Scanner runs on python so it can be used anywhere.
 The ID card can be an file or on the web.
 The verifier will be on the server itself.
 
-To do:
-AES encryption for 
+### To do:
+
