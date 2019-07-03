@@ -28,7 +28,7 @@ cd <path to your folder>
 pip3 install -r requirements.txt
 
 Run the scanner in the terminal:
-python3 scanner_video.py
+python3 scanners/scanner_video.py
 
 You can then show any qr code to the camera and it will display the encrypted message.
 
