@@ -1,9 +1,7 @@
 from imutils.video import VideoStream
 from pyzbar import pyzbar
-import datetime
 import imutils
 import time
-import cv2
 
 print('[INFO] Camera starting up...')
 
