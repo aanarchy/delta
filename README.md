@@ -20,6 +20,9 @@ The verifier will be on the server itself.
 
 
 ## How to:
+Download python from here:
+https://www.python.org/downloads/release/python-373/
+
 Install all dependencies using terminal:
 cd <path to your folder>
 pip3 install -r requirements.txt
@@ -27,6 +30,6 @@ pip3 install -r requirements.txt
 Run the scanner in the terminal:
 python3 scanner_video.py
 
-You can then show any qr code to the camera. 
+You can then show any qr code to the camera and it will display the encrypted message.
 
 ### To do:
