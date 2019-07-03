@@ -25,6 +25,8 @@ cd <path to your folder>
 pip3 install -r requirements.txt
 
 Run the scanner in the terminal:
-python3 scanner.py -i test.png
+python3 scanner_video.py
+
+You can then show any qr code to the camera. 
 
 ### To do:
