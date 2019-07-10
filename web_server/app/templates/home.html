@@ -1,0 +1,6 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h1>Hi, {{ current_user.username }}!</h1>
+    <p><a href="{{ url_for('download_qrcode') }}">Download your QR Code</a></p>
+{% endblock %}
