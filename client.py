@@ -7,13 +7,14 @@ import config
 from imutils.video import VideoStream
 import imutils
 import pyzbar
+import time
 
 sel = selectors.DefaultSelector()
-"""print('[INFO] Camera starting up...')
+print('[INFO] Camera starting up...')
 vs = VideoStream(src=0).start()
 time.sleep(2.0)
 
-while True
+while True:
 
     vs = VideoStream(src=0).start()
     frame = vs.read()
@@ -21,7 +22,7 @@ while True
     barcodes = pyzbar.decode(frame)
 
     for barcode in barcodes:
-        raw_data = barcode.data.decode('utf-8')"""
+        raw_data = barcode.data.decode('utf-8')
 
 raw_data = [b'1']
 
