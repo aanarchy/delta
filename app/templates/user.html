@@ -3,11 +3,10 @@
 {% block content %}
     <table>
         <tr valign="top">
-            <td><img src="{{ user.avatar(128) }}"></td>
             <td>
               <h1>User: {{ user.username }}</h1>
               {% if user.last_seen %}<p>Last seen on: {{ user.last_seen }}</p>{% endif %}
-              <p>Last seen on: {{ user.status }}</p>
+              <p>User status: {{ user.status }}</p>
             </td>
         </tr>
     </table>

@@ -1,4 +1,5 @@
-from flask import render_template, flash, redirect, url_for, request
+import qrcode
+from flask import render_template, flash, redirect, url_for, request, send_file
 from flask_login import current_user, login_user, logout_user, login_required
 from werkzeug.urls import url_parse
 from app import app, db
@@ -59,7 +60,21 @@ def user(username):
     return render_template('user.html', user=user)
 
 
-@app.route('/qr/<username>', methods=['GET', 'POST'])
+@app.route('/qr/<id>', methods=['GET', 'POST'])
 @login_required
 def download_qrcode(id):
     user = User.query.filter_by(id=id).first_or_404()
+    id = user.id
+    qr = qrcode.QRCode(
+        version=1,
+        error_correction=qrcode.constants.ERROR_CORRECT_L,
+        box_size=10,
+        border=4,
+    )
+    qr.add_data(id)
+    qr.make(fit=True)
+
+    img = qr.make_image(fill_color="black", back_color="white")
+
+    img.save('{}.png'.format(id))
+    return send_file('../{}.png'.format(id), mimetype='image/png')

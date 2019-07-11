@@ -3,16 +3,12 @@
 import socket
 import selectors
 import types
+from datetime import datetime
 import config
-from flask import Flask
-from config import Config
-from flask_sqlalchemy import SQLAlchemy
-from flask_migrate import Migrate
+from app.models import User
+from app import db
 
-app = Flask(__name__)
-app.config.from_object(Config)
-db = SQLAlchemy(app)
-migrate = Migrate(app, db)
+
 host = config.host
 port = config.port
 sel = selectors.DefaultSelector()
@@ -20,7 +16,7 @@ sel = selectors.DefaultSelector()
 
 def accept_wrapper(sock):
     conn, addr = sock.accept()
-    print('[INFO] accepted connection from', addr)
+    print('[INFO] Accepted connection from', addr)
     conn.setblocking(False)
     data = types.SimpleNamespace(addr=addr, inb=b'', outb=b'')
     events = selectors.EVENT_READ | selectors.EVENT_WRITE
@@ -32,16 +28,30 @@ def service_connection(key, mask):
     data = key.data
     if mask & selectors.EVENT_READ:
         recv_data = sock.recv(1024)
+        id = int(recv_data)
         if recv_data:
-            data.outb += recv_data
+            user = User.query.filter_by(id=id).first()
+            if user is not None:
+                if (datetime.utcnow() - user.last_seen) >= config.cooldown:
+                    if user.status == 'Logged in':
+                        user.status = 'Logged out'
+                        data.outb += '[INFO] {} has logged out.'.format(
+                                      user.username).encode('utf-8')
+                        user.last_seen = datetime.utcnow()
+                        db.session.commit()
+                    elif user.status == 'Logged out':
+                        user.status = 'Logged in'
+                        data.outb += '[INFO] {} has logged in.'.format(
+                                      user.username).encode('utf-8')
+                        user.last_seen = datetime.utcnow()
+                        db.session.commit()
         else:
             print('[INFO] Closing connection to', data.addr)
             sel.unregister(sock)
             sock.close()
     if mask & selectors.EVENT_WRITE:
         if data.outb:
-
-            print('echoing', repr(data.outb), 'to', data.addr)
+            print('[INFO] Sending', repr(data.outb), 'to', data.addr)
             sent = sock.send(data.outb)
             data.outb = data.outb[sent:]
 

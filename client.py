@@ -3,18 +3,17 @@
 import socket
 import selectors
 import types
-import time
 import config
 from imutils.video import VideoStream
 import imutils
 import pyzbar
 
 sel = selectors.DefaultSelector()
-print('[INFO] Camera starting up...')
+"""print('[INFO] Camera starting up...')
 vs = VideoStream(src=0).start()
 time.sleep(2.0)
 
-while True:
+while True
 
     vs = VideoStream(src=0).start()
     frame = vs.read()
@@ -22,7 +21,9 @@ while True:
     barcodes = pyzbar.decode(frame)
 
     for barcode in barcodes:
-        raw_data = barcode.data.decode('utf-8')
+        raw_data = barcode.data.decode('utf-8')"""
+
+raw_data = [b'1']
 
 
 def start_connections(host, port, num_conns):
@@ -37,7 +38,7 @@ def start_connections(host, port, num_conns):
         data = types.SimpleNamespace(connid=connid,
                                      msg_total=sum(len(d) for d in raw_data),
                                      recv_total=0,
-                                     messages=list(raw_data),
+                                     data=list(raw_data),
                                      outb=b'')
         sel.register(sock, events, data=data)
 
