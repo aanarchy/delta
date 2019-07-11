@@ -1,7 +1,7 @@
 import os
 from datetime import timedelta
 
-host = '127.0.0.1'
+host = '0.0.0.0'
 port = 54321
 basedir = os.path.abspath(os.path.dirname(__file__))
 cooldown = timedelta(minutes=1)
