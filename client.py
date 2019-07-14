@@ -6,40 +6,46 @@ import types
 import config
 from imutils.video import VideoStream
 import imutils
-import pyzbar
+from pyzbar.pyzbar import decode
 import time
+import sys
 
 sel = selectors.DefaultSelector()
 print('[INFO] Camera starting up...')
 vs = VideoStream(src=0).start()
-time.sleep(2.0)
+time.sleep(5.0)
+raw_data = None
 
 while True:
-
-    vs = VideoStream(src=0).start()
     frame = vs.read()
     frame = imutils.resize(frame, width=400)
-    barcodes = pyzbar.decode(frame)
-
+    barcodes = decode(frame)
+    
     for barcode in barcodes:
-        raw_data = barcode.data.decode('utf-8')
-
-raw_data = [b'1']
-
-
+        barcode_data = barcode.data
+        print(barcode_data)
+        if barcode_data is not None:
+            raw_data = barcode_data
+            break
+        else:
+            print('QR Code not detected.')
+            sys.exit(0)
+    break
+        
 def start_connections(host, port, num_conns):
     server_addr = (host, port)
     for i in range(0, num_conns):
         connid = i + 1
+        ldata = [raw_data]
         print('[INFO] Starting connection', connid, 'to', server_addr)
         sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         sock.setblocking(False)
         sock.connect_ex(server_addr)
         events = selectors.EVENT_READ | selectors.EVENT_WRITE
         data = types.SimpleNamespace(connid=connid,
-                                     msg_total=sum(len(d) for d in raw_data),
+                                     msg_total=len(raw_data),
                                      recv_total=0,
-                                     data=list(raw_data),
+                                     data=ldata,
                                      outb=b'')
         sel.register(sock, events, data=data)
 
@@ -66,7 +72,7 @@ def service_connection(key, mask):
 
 host = config.host
 port = config.port
-start_connections(host, int(port), len(raw_data))
+start_connections(host, int(port), 1)
 
 
 try:
