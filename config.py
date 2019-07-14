@@ -1,7 +1,8 @@
 import os
 from datetime import timedelta
 
-host = 'deltaauth.ddns.net'
+
+host = '0.0.0.0'
 port = 54321
 basedir = os.path.abspath(os.path.dirname(__file__))
 cooldown = timedelta(minutes=1)
