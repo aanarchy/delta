@@ -1,6 +1,4 @@
 # Delta
-
-## Description
 Delta is a web/QR code based authentication system built using python, imutils and ZBar. The server will be based on flask and SQLAlchemy. Multi connection sockets are implemented using selectors.
 
 ## Compatibility
