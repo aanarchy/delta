@@ -8,36 +8,18 @@ from imutils.video import VideoStream
 import imutils
 from pyzbar.pyzbar import decode
 import time
-import sys
 
 sel = selectors.DefaultSelector()
 print('[INFO] Camera starting up...')
 vs = VideoStream(src=0).start()
-time.sleep(5.0)
-raw_data = None
+time.sleep(2.0)
 
-while True:
-    frame = vs.read()
-    frame = imutils.resize(frame, width=400)
-    barcodes = decode(frame)
-    
-    for barcode in barcodes:
-        barcode_data = barcode.data
-        print(barcode_data)
-        if barcode_data is not None:
-            raw_data = barcode_data
-            break
-        else:
-            print('QR Code not detected.')
-            sys.exit(0)
-    break
-        
-def start_connections(host, port, num_conns):
+
+def start_connections(host, port, num_conns, raw_data):
     server_addr = (host, port)
     for i in range(0, num_conns):
         connid = i + 1
-        ldata = [raw_data]
-        print('[INFO] Starting connection', connid, 'to', server_addr)
+#       print('[INFO] Starting connection', connid, 'to', server_addr)
         sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         sock.setblocking(False)
         sock.connect_ex(server_addr)
@@ -45,7 +27,7 @@ def start_connections(host, port, num_conns):
         data = types.SimpleNamespace(connid=connid,
                                      msg_total=len(raw_data),
                                      recv_total=0,
-                                     data=ldata,
+                                     data=raw_data,
                                      outb=b'')
         sel.register(sock, events, data=data)
 
@@ -56,7 +38,8 @@ def service_connection(key, mask):
     if mask & selectors.EVENT_READ:
         recv_data = sock.recv(1024)
         if recv_data:
-            print('[INFO]', repr(recv_data), 'from connection', data.connid)
+            print('[INFO]', str(recv_data),
+                  'from connection', data.connid)
             data.recv_total += len(recv_data)
         if not recv_data or data.recv_total == data.msg_total:
             print('[INFO] Closing connection', data.connid)
@@ -72,17 +55,36 @@ def service_connection(key, mask):
 
 host = config.host
 port = config.port
-start_connections(host, int(port), 1)
 
+"""while True:
+    frame = vs.read()
+    frame = imutils.resize(frame, width=400)
+    barcodes = decode(frame)
 
+    for barcode in barcodes:
+        barcode_data = barcode.data
+        print(barcode_data)
+        if barcode_data is not None:
+            data = [barcode_data]
+            start_connections(host, port, len(data), data)"""
 try:
     while True:
+        frame = vs.read()
+        frame = imutils.resize(frame, width=400)
+        barcodes = decode(frame)
         events = sel.select(timeout=1)
-        if events:
-            for key, mask in events:
-                service_connection(key, mask)
-        if not sel.get_map():
-            break
+        for barcode in barcodes:
+            barcode_data = barcode.data
+#           print(barcode_data)
+            if barcode_data is not None:
+                data = [barcode_data]
+                start_connections(host, port, len(data), data)
+                if events:
+                    for key, mask in events:
+                        service_connection(key, mask)
+                if not sel.get_map():
+                    break
+
 except KeyboardInterrupt:
     print("caught keyboard interrupt, exiting")
 finally:

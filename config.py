@@ -1,11 +1,13 @@
 import os
-from datetime import timedelta
+from datetime import datetime, date, time, timedelta
 
 
 host = '0.0.0.0'
 port = 54321
 basedir = os.path.abspath(os.path.dirname(__file__))
-cooldown = timedelta(minutes=1)
+cooldown = timedelta(seconds=10)
+late = True
+late_time = datetime.combine(date.today(), time(hour=8, minute=30, second=0))
 
 
 class Config(object):
