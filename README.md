@@ -16,4 +16,4 @@ The verifier will be on the server itself.
 - Possibly implement continuous multi connections by offloading some input checks on client instead of the server.
 - Use UUIDs instead of simple numbers
 - Replace local sockets with API
-- Possibly replace SQLAlchemy with Red
+- Possibly replace SQLAlchemy with NoSQL databases (Redis & MongoDB)
