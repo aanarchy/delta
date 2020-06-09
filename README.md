@@ -13,5 +13,5 @@ The ID card can be an file or on the web.
 The verifier will be on the server itself.
 
 ### To do:
-Possibly implement continuous multi connections by offloading some input checks on client instead of the server.
-Use UUIDs instead of simple numbers
+- Possibly implement continuous multi connections by offloading some input checks on client instead of the server.
+- Use UUIDs instead of simple numbers
